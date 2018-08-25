@@ -1,11 +1,14 @@
 <ion-tabs>
-  <ion-tab label="Home" icon="home" href="/tabs/(home:home)">
+  <ion-tab label="待付押金" [badge]='pendingDepositCount' icon="md-paper" href="/tabs/(home:home)">
     <ion-router-outlet name="home"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="About" icon="information-circle" href="/tabs/(about:about)">
-    <ion-router-outlet name="about"></ion-router-outlet>
+  <ion-tab label="待付租金" [badge]='rentCount' icon="md-paper" href="/tabs/(will-rent:will-rent)">
+    <ion-router-outlet name="will-rent"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="Contact" icon="contacts" href="/tabs/(contact:contact)">
+  <ion-tab label="待完成" icon="md-paper" [badge]='pendingCompletionCount' href="/tabs/(contact:contact)">
     <ion-router-outlet name="contact"></ion-router-outlet>
+  </ion-tab>
+  <ion-tab label="已完成订单" icon="md-paper" href="/tabs/(about:about)">
+    <ion-router-outlet name="about"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>

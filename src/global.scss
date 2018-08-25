@@ -10,3 +10,23 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+.no-data {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 100%;
+    font-size: 16px;
+    color: #666666;
+    text-align: center;
+}
+
+
+.toast-error .toast-message {
+    background: #ea445a;
+    color: #ffffff;
+}
+
+.toast-success .toast-message {
+    background: #f69234;
+    color: #ffffff;
+}

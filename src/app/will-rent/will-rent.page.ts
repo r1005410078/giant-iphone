@@ -1,19 +1,20 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
 import { InfiniteScroll, LoadingController, PopoverController, AlertController } from '../../../node_modules/@ionic/angular';
-// tslint:disable-next-line:max-line-length
 import { order_list_api, order_updateDepositMoney_api, order_createAlipayQrcode_api, order_settlement_api, order_paySuccess_api } from '../../api';
 import { HttpClient } from '../../../node_modules/@angular/common/http';
 import { PopoverComponent } from '../popover/popover.component';
 import { tap, switchMap } from '../../../node_modules/rxjs/operators';
 import { NgxQRCodeComponent } from '../../../node_modules/ngx-qrcode2';
 import { NotificationService } from '../notification.service';
+import { of } from '../../../node_modules/rxjs';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss']
+  selector: 'app-will-rent',
+  templateUrl: './will-rent.page.html',
+  styleUrls: ['./will-rent.page.scss'],
 })
-export class HomePage implements OnInit {
+export class WillRentPage implements OnInit {
+
   private data = null;
   private pageSize = 20;
   private pageIndex = 1;
@@ -55,69 +56,38 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  async presentAlertPrompt(item) {
-    const alert = await this.alertController.create({
-      header: '支付押金',
-      inputs: [
-        {
-          name: 'money',
-          type: 'number',
-          value: item.deposit_money,
-          placeholder: '请输入押金金额'
-        }
-      ],
-      buttons: [
-        {
-          text: '取消',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: item.deposit_type === '支付宝' ? '二维码支付' : item.deposit_type === '微信' ? '确定，并通知用户重新提交订单' : '生成订单',
-          handler: (e) => {
-            this.http.post(order_updateDepositMoney_api, {
-              money: e.money,
-              order_sn: item.deposit_order_sn
+  presentAlertPrompt(item) {
+    of(item).pipe(
+      switchMap(() => {
+        if (item.rent_type === '支付宝') {
+          return this.http.post(order_createAlipayQrcode_api, {
+            order_no: item.rent_order_sn
+          });
+        } else if (item.rent_type === '微信') {
+          // 通知用户去
+          this.notification.success('修改押金成功，通知用户在小程序中重新提交订单');
+        } else {
+          return this.http.post(order_paySuccess_api, {
+            order_no: item.rent_order_sn
+          }).pipe(
+            tap(res => {
+              this.notification.success('现金订单生成成功');
+              this.loadData();
             })
-            .pipe(
-              switchMap(() => {
-                if (item.deposit_type === '支付宝') {
-                  return this.http.post(order_createAlipayQrcode_api, {
-                    order_no: item.deposit_order_sn
-                  });
-                } else if (item.deposit_type === '微信') {
-                  // 通知用户去
-                  this.notification.success('修改押金成功，通知用户在小程序中重新提交订单');
-                  return [];
-                } else {
-                  return this.http.post(order_paySuccess_api, {
-                    order_no: item.deposit_order_sn
-                  }).pipe(
-                    tap(res => {
-                      this.notification.success('现金订单生成成功');
-                      this.loadData();
-                    })
-                  );
-                }
-              })
-            )
-            .subscribe((res: any) => {
-              if (res && res.data.url) {
-                this.codeUrl = res.data.url;
-                this.qrcodeRef.value = this.codeUrl;
-                this.qrcodeRef.toDataURL().then(url => {
-                  this.presentAlertConfirm(url);
-                });
-              }
-            });
-          }
+          );
         }
-      ]
+        return [];
+      })
+    )
+    .subscribe((res: any) => {
+      if (res && res.data.url) {
+        this.codeUrl = res.data.url;
+        this.qrcodeRef.value = this.codeUrl;
+        this.qrcodeRef.toDataURL().then(url => {
+          this.presentAlertConfirm(url);
+        });
+      }
     });
-
-    await alert.present();
   }
 
   settlementOrder (item) {
@@ -144,7 +114,7 @@ export class HomePage implements OnInit {
       this.infiniteScroll.disabled = false;
     }
     this.http.post(order_list_api, {
-      deposit_status: 0,
+      deposit_status: 1,
       page_size: this.pageSize,
       page: this.pageIndex,
       rent_status: 0

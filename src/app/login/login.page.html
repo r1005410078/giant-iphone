@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>登陆</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+    <ion-item>
+      <ion-label position="floating">用户名</ion-label>
+      <ion-input [ngModelOptions]="{standalone: true}" name='username' [(ngModel)]="model.username" required #power="ngModel"></ion-input>
+    </ion-item>
+    <div [hidden]="power.valid || power.pristine" class="error">
+      账号不能为空
+    </div>
+    <ion-item>
+      <ion-label position="floating">密码</ion-label>
+      <ion-input [ngModelOptions]="{standalone: true}" type="password" name='password' [(ngModel)]="model.password" required #pass="ngModel"></ion-input>
+    </ion-item>
+    <div [hidden]="pass.valid || pass.pristine" class="error">
+      密码不能为空
+    </div>
+    <ion-button [disabled]="!(pass.valid && power.valid)" expand='block' class='submit' size="default" type="submit" color="primary">登陆</ion-button>
+  </form>
+  
+</ion-content>
