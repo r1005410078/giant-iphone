@@ -16,14 +16,14 @@ export class UserinfoService {
 
   logout () {
     localStorage.removeItem('userInfo');
-    this.router.navigateByUrl('login');
+    // location.reload();
   }
 
   login (model: {username: string, password: string}) {
     this.http.post( loginApi , model)
-    .subscribe((value: {ok: boolean, data?: {token: string}, error_msg?: string}) => {
+    .subscribe((value: {ok: boolean, data?: {token: string, username: string}, error_msg?: string}) => {
       if (value.ok) {
-        localStorage.setItem('userInfo', JSON.stringify({token: value.data.token}));
+        localStorage.setItem('userInfo', JSON.stringify({token: value.data.token, username: value.data.username}));
         this.router.navigateByUrl('');
       }
     });

@@ -27,6 +27,10 @@ export class HomePage implements OnInit {
   @ViewChild(InfiniteScroll)
   private infiniteScroll: InfiniteScroll;
 
+  get username () {
+    return JSON.parse(localStorage.getItem('userInfo')).username;
+  }
+
   constructor (
     private http: HttpClient,
     public alertController: AlertController,

@@ -53,6 +53,7 @@ export class TabsPage implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
+    console.log('ngOnDestroy');
     this.orderCount.unsubscribe();
   }
 }

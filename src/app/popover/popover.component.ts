@@ -18,7 +18,6 @@ export class PopoverComponent implements OnInit {
 
   logout () {
     this.popover.dismiss();
-    console.log();
     this.user.logout();
   }
 }
