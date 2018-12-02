@@ -27,6 +27,18 @@
 }
 
 .toast-success .toast-message {
-    background: #f69234;
-    color: #ffffff;
+background: #f69234;
+color: #ffffff;
+}
+
+.item-text {
+   float: right;
+}
+
+.item-label {
+   border-bottom: 1px solid #cdcdcd;
+}
+
+.hydrated {
+ overflow: hidden !important;
 }

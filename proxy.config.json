@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "http://admin.coder4j.cn/api",
+      "target": "http://admin.cyclestation.cn/api",
       "logLevel": "debug",
       "changeOrigin": true,
       "pathRewrite": {

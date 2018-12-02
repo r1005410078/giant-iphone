@@ -1,11 +1,16 @@
 
 <ion-toolbar color="primary">
   <ion-buttons slot="primary">
+    <ion-button color="light" (click)="filter()">
+      <span>{{rentStation}}</span>
+    </ion-button>
+    <ion-button color="light" (click)="returnFilter()">
+      <span>{{returnStation}}</span>
+    </ion-button>
     <ion-button color="light" (click)="loadData()">
        <span>刷新</span>
     </ion-button>
   </ion-buttons>
-  <ion-title>待付押金订单</ion-title>
 </ion-toolbar>
 
 <ion-content padding>
@@ -13,17 +18,23 @@
     <ion-item-sliding *ngFor="let item of data" id="item100" class="item">
       <ion-item>
         <ion-label>
-          <h2>{{item.real_name}}</h2>
-          <p>手机号：{{item.phone}}</p>
-          <p>押金支付方式：{{item.deposit_type}}</p>
-          <p>押金金额：{{item.deposit_money}}</p>
-          <p>租金支付方式：{{item.rent_type}}</p>
-          <p>租金金额：{{item.rent_money}}</p>
-          <p>租车时间：{{item.rent_time}}</p>
-          <p>车辆列表：{{item.bike_num_list}}</p>
-          <p>订单号：{{item.deposit_order_sn}}</p>
+          <p>用户名：<span class="item-text">{{item.real_name}}</span></p>
+          <p>手机号：<span class="item-text">{{item.phone}}</span></p>
+          <p>租车驿站：<span class="item-text">{{item.rent_station_name}}</span></p>
+          <p>还车驿站：<span class="item-text">{{item.return_station_name}}</span></p>
+          <p>押金付款方式：<span class="item-text">{{item.deposit_type}}</span></p>
+          <p>押金金额：<span class="item-text">{{item.deposit_money}}</span></p>
+          <p>租金付款方式：<span class="item-text">{{item.rent_type}}</span></p>
+          <p>租金金额：<span class="item-text">{{item.rent_money}}</span></p>
+          <p>租车次数：<span class="item-text">{{item.user_num}}</span></p>
+          <p>租车时间：<span class="item-text">{{item.rent_time}}</span></p>
+          <p>租车套餐：<span class="item-text">{{item.combo_names}}</span></p>
+          <p>订单号：<span class="item-text">{{item.deposit_order_sn}}</span></p>
         </ion-label>
       </ion-item>
+      <ion-item-options side="end" *ngIf="item.rent_type === '微信'">
+          <ion-item-option (click)="onCreateOrder(item)">确认还车</ion-item-option>
+      </ion-item-options>
       <ion-item-options side="end" *ngIf="item.rent_type === '支付宝'">
         <ion-item-option (click)="settlementOrder(item)">扫码支付</ion-item-option>
       </ion-item-options>

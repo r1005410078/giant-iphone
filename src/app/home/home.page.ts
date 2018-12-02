@@ -28,7 +28,7 @@ export class HomePage implements OnInit {
   private infiniteScroll: InfiniteScroll;
 
   get username () {
-    return JSON.parse(localStorage.getItem('userInfo')).username;
+    return localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).username : '';
   }
 
   constructor (

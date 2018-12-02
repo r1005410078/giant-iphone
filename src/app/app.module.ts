@@ -12,6 +12,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '../../node_modules/@angular
 import { AuthInterceptorService } from './auth-interceptor.service';
 import { PopoverComponent } from './popover/popover.component';
 import { NotificationService } from './notification.service';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, PopoverComponent],
@@ -22,6 +23,7 @@ import { NotificationService } from './notification.service';
     SplashScreen,
     HttpClientModule,
     NotificationService,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

@@ -1,7 +1,8 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { order_list_api } from '../../api';
-import { InfiniteScroll, LoadingController } from '../../../node_modules/@ionic/angular';
+import { InfiniteScroll, LoadingController, PopoverController } from '../../../node_modules/@ionic/angular';
 import { HttpClient } from '../../../node_modules/@angular/common/http';
+import { UserinfoService } from '../userinfo.service';
 
 @Component({
   selector: 'app-about',
@@ -16,12 +17,42 @@ export class AboutPage implements OnInit {
   @ViewChild(InfiniteScroll)
   private infiniteScroll: InfiniteScroll;
 
+  rentStation = '选择租车驿站';
+  returnStation = '选择还车驿站';
+  stationParams: { rent_station_id?: string, return_station_id?: string } = {};
+
   constructor (
-    private http: HttpClient
+    private http: HttpClient,
+    public userinfoService: UserinfoService,
+    public popoverController: PopoverController
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  filter(rent_station_id: string): void {
+    this.userinfoService.stationList(station => {
+      this.rentStation = station.text;
+      if (station.value) {
+        Object.assign(this.stationParams, {rent_station_id: station.value});
+      } else {
+        delete this.stationParams.rent_station_id;
+      }
+      this.loadData();
+    });
+  }
+
+  returnFilter(return_station_id: string): void {
+    this.userinfoService.stationList(station => {
+      this.returnStation = station.text;
+      if (station.value) {
+        Object.assign(this.stationParams, {return_station_id: station.value});
+      } else {
+        delete this.stationParams.return_station_id;
+      }
+      this.loadData();
+    });
   }
 
   async loadData(event?) {
@@ -35,7 +66,8 @@ export class AboutPage implements OnInit {
       deposit_status: 2,
       page_size: this.pageSize,
       page: this.pageIndex,
-      rent_status: 1
+      rent_status: 1,
+      ...this.stationParams
     })
     .subscribe((res: any) => {
       this.total = res.data.total;

@@ -1,16 +1,13 @@
 
 <ion-toolbar color="primary">
   <ion-buttons slot="secondary">
+    <ion-button color="light" (click)="loadData()">
+      <span>刷新</span>
+    </ion-button>
     <ion-button (click)="presentPopover($event)">
       <span>{{username}}</span>
     </ion-button>
   </ion-buttons>
-  <ion-buttons slot="primary">
-    <ion-button color="light" (click)="loadData()">
-      <span>刷新</span>
-    </ion-button>
-  </ion-buttons>
-  <ion-title>待付押金订单</ion-title>
 </ion-toolbar>
 
 <ion-content padding>
@@ -18,12 +15,12 @@
     <ion-item-sliding *ngFor="let item of data" id="item100" class="item">
       <ion-item>
         <ion-label>
-          <h2>{{item.real_name}}</h2>
-          <p>手机号：{{item.phone}}</p>
-          <p>押金支付方式：{{item.deposit_type}}</p>
-          <p>押金金额：{{item.deposit_money}}</p>
-          <p>车辆列表：{{item.bike_num_list}}</p>
-          <p>订单号：{{item.deposit_order_sn}}</p>
+          <p>用户名：<span class="item-text">{{item.real_name}}</span></p>
+          <p>手机号：<span class="item-text">{{item.phone}}</span></p>
+          <p>押金支付方式：<span class="item-text">{{item.deposit_type}}</span></p>
+          <p>押金金额：<span class="item-text">{{item.deposit_money}}</span></p>
+          <p>车辆列表：<span class="item-text">{{item.bike_num_list}}</span></p>
+          <p>订单号：<span class="item-text">{{item.deposit_order_sn}}</span></p>
         </ion-label>
       </ion-item>
       <ion-item-options side="end" *ngIf="item.deposit_type === '支付宝'">

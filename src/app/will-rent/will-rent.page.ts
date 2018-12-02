@@ -1,12 +1,16 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
 import { InfiniteScroll, LoadingController, PopoverController, AlertController } from '../../../node_modules/@ionic/angular';
-import { order_list_api, order_updateDepositMoney_api, order_createAlipayQrcode_api, order_settlement_api, order_paySuccess_api } from '../../api';
+import { order_list_api,
+  order_updateDepositMoney_api,
+  order_createAlipayQrcode_api,
+  order_settlement_api, order_paySuccess_api } from '../../api';
 import { HttpClient } from '../../../node_modules/@angular/common/http';
 import { PopoverComponent } from '../popover/popover.component';
 import { tap, switchMap } from '../../../node_modules/rxjs/operators';
 import { NgxQRCodeComponent } from '../../../node_modules/ngx-qrcode2';
 import { NotificationService } from '../notification.service';
 import { of } from '../../../node_modules/rxjs';
+import { UserinfoService } from '../userinfo.service';
 
 @Component({
   selector: 'app-will-rent',
@@ -28,8 +32,13 @@ export class WillRentPage implements OnInit {
   @ViewChild(InfiniteScroll)
   private infiniteScroll: InfiniteScroll;
 
+  rentStation = '选择租车驿站';
+  returnStation = '选择还车驿站';
+  stationParams: { rent_station_id?: string, return_station_id?: string } = {};
+
   constructor (
     private http: HttpClient,
+    public userinfoService: UserinfoService,
     public alertController: AlertController,
     public popoverController: PopoverController,
     private notification: NotificationService
@@ -37,6 +46,30 @@ export class WillRentPage implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  filter(rent_station_id: string): void {
+    this.userinfoService.stationList(station => {
+      this.rentStation = station.text;
+      if (station.value) {
+        Object.assign(this.stationParams, {rent_station_id: station.value});
+      } else {
+        delete this.stationParams.rent_station_id;
+      }
+      this.loadData();
+    });
+  }
+
+  returnFilter(return_station_id: string): void {
+    this.userinfoService.stationList(station => {
+      this.returnStation = station.text;
+      if (station.value) {
+        Object.assign(this.stationParams, {return_station_id: station.value});
+      } else {
+        delete this.stationParams.return_station_id;
+      }
+      this.loadData();
+    });
   }
 
   async presentAlertConfirm(url) {
@@ -54,6 +87,10 @@ export class WillRentPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  onCreateOrder (data) {
+    this.userinfoService.onCreateOrder(data, () => this.loadData());
   }
 
   presentAlertPrompt(item) {
@@ -117,7 +154,8 @@ export class WillRentPage implements OnInit {
       deposit_status: 1,
       page_size: this.pageSize,
       page: this.pageIndex,
-      rent_status: 0
+      rent_status: 0,
+      ...this.stationParams
     })
     .subscribe((res: any) => {
       this.total = res.data.total;
